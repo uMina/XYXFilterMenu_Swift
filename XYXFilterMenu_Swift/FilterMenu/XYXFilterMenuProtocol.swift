@@ -8,10 +8,15 @@
 
 import Foundation
 
-protocol XYXFilterMenuDataSource:NSObjectProtocol {
+protocol XYXFilterMenuDataSource : NSObjectProtocol {
     
     func numberOfColumns(menu:XYXFilterMenu) -> Int
     func titleOfColumns(menu:XYXFilterMenu, index:Int) -> String
     
+}
+
+@objc protocol XYXFilterMenuDelegate : NSObjectProtocol {
+    
+    @objc optional func menu(menu:XYXFilterMenu,tapIndex:Int)
     
 }

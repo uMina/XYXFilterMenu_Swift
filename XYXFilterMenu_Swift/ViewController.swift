@@ -10,13 +10,14 @@ import UIKit
 
 class ViewController: UIViewController {
 
-    let titles = ["第一列","第2列","第3列","第4列"]
+    let titles = ["第1列","第2列","第3列","第4列"]
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         let menu = XYXFilterMenu.init(frame: CGRect(x: 0, y: 100, width: XYX_SCREEN_WIDTH, height: 44))
         menu.dataSource = self
+        menu.delegate = self
         self.view.addSubview(menu)
     }
 
@@ -33,6 +34,12 @@ extension ViewController:XYXFilterMenuDataSource{
     }
     func titleOfColumns(menu: XYXFilterMenu, index:Int) -> String {
         return titles[index]
+    }
+}
+
+extension ViewController:XYXFilterMenuDelegate{
+    func menu(menu: XYXFilterMenu, tapIndex: Int) {
+        print("被点击的是第\(tapIndex)列")
     }
 }
 

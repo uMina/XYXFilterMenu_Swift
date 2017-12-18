@@ -18,6 +18,7 @@
 		F49F4A171FE3B7F40092D9CB /* XYXFilterMenuConstant.swift in Sources */ = {isa = PBXBuildFile; fileRef = F49F4A161FE3B7F40092D9CB /* XYXFilterMenuConstant.swift */; };
 		F49F4A1A1FE3D73C0092D9CB /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F49F4A191FE3D73C0092D9CB /* CoreGraphics.framework */; };
 		F49F4A1C1FE3E4890092D9CB /* RevealServer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F49F4A1B1FE3E4890092D9CB /* RevealServer.framework */; };
+		F4F06F161FE7972200A35CC4 /* XYXFilterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4F06F151FE7972200A35CC4 /* XYXFilterView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -34,6 +35,7 @@
 		F49F4A161FE3B7F40092D9CB /* XYXFilterMenuConstant.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XYXFilterMenuConstant.swift; sourceTree = "<group>"; };
 		F49F4A191FE3D73C0092D9CB /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		F49F4A1B1FE3E4890092D9CB /* RevealServer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = RevealServer.framework; sourceTree = "<group>"; };
+		F4F06F151FE7972200A35CC4 /* XYXFilterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XYXFilterView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -82,6 +84,7 @@
 			isa = PBXGroup;
 			children = (
 				F49F4A101FE39D290092D9CB /* XYXFilterMenu.swift */,
+				F4F06F151FE7972200A35CC4 /* XYXFilterView.swift */,
 				F49F4A141FE3AC390092D9CB /* XYXFilterIndexPath.swift */,
 				F49F4A121FE3AA390092D9CB /* XYXFilterMenuProtocol.swift */,
 				F49F4A161FE3B7F40092D9CB /* XYXFilterMenuConstant.swift */,
@@ -201,6 +204,7 @@
 				F49F4A151FE3AC390092D9CB /* XYXFilterIndexPath.swift in Sources */,
 				F49F4A171FE3B7F40092D9CB /* XYXFilterMenuConstant.swift in Sources */,
 				F49F4A131FE3AA390092D9CB /* XYXFilterMenuProtocol.swift in Sources */,
+				F4F06F161FE7972200A35CC4 /* XYXFilterView.swift in Sources */,
 				F49F4A111FE39D290092D9CB /* XYXFilterMenu.swift in Sources */,
 				F49F49FF1FE39CEC0092D9CB /* ViewController.swift in Sources */,
 				F49F49FD1FE39CEC0092D9CB /* AppDelegate.swift in Sources */,
