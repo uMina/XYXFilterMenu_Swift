@@ -13,10 +13,15 @@ import CoreGraphics
 class XYXFilterMenu: UIView {
     
     //MARK: - Member
-    var delegate:XYXFilterMenuDelegate?
+    var delegate:XYXFilterMenuDelegate?{
+        didSet{
+            filterView.delegate = delegate
+        }
+    }
     var dataSource:XYXFilterMenuDataSource?{
         didSet{
             configureMenuBar()
+            filterView.dataSource = dataSource
         }
     }
     
@@ -78,9 +83,7 @@ class XYXFilterMenu: UIView {
         var tempIndicators:[CAShapeLayer] = []
         
         for idx in 0...(numOfMenu-1) {
-            //bgLayer
-//            let color = idx%2 == 0 ? UIColor.yellow : self.menuBarBGColor
-            
+            //bgLayer            
             let bgLayerPosition = CGPoint(x:(CGFloat(idx)+0.5)*bgLayerInterval, y:self.frame.height/2)
             let bgLayer = createBgLayer(color: self.menuBarBGColorDefault, position: bgLayerPosition)
             self.layer.addSublayer(bgLayer)
@@ -88,7 +91,7 @@ class XYXFilterMenu: UIView {
             
             //title
             let titlePosition = CGPoint(x: CGFloat(idx*2+1) * textLayerInterval-8.0, y: self.frame.height / 2)
-            let titleString = dataSource?.titleOfColumns(menu: self, index: idx)
+            let titleString = dataSource?.menu(self, titleOfColumnAt: idx)
             let titleLayer = createTextLayer(string:titleString!, color: self.menuBarColorDefault, position: titlePosition)
             self.layer.addSublayer(titleLayer)
             tempTitles.append(titleLayer)
@@ -106,8 +109,12 @@ class XYXFilterMenu: UIView {
     
     fileprivate func configureBaseSetting() {
         //所有的默认字体、颜色都在这里初始化
+        self.layer.backgroundColor = UIColor.darkGray.cgColor
         //筛选器
-        filterView.backgroundColor = UIColor.cyan
+        filterView.menu = self
+        filterView.unfoldHeight = XYX_SCREEN_HEIGHT - graySpaceHeight
+        filterView.frame = CGRect(x: self.frame.minX, y: self.frame.maxY, width: self.frame.width, height: filterView.unfoldHeight)
+        filterView.backgroundColor = UIColor(white: 1.0, alpha: 1)
         
         //底视图
         backGroundView.frame = CGRect(x: frame.minX, y: frame.minY, width: frame.width, height: XYX_SCREEN_HEIGHT - frame.minY)
@@ -120,7 +127,7 @@ class XYXFilterMenu: UIView {
 
 // Animate
 extension XYXFilterMenu{
-    func animate(unfold:Bool, filterView:UIView, indicator:CAShapeLayer, title:CATextLayer, backgroundView:UIView, complete:(()->Void)?) {
+    func animate(unfold:Bool, filterView:XYXFilterView, indicator:CAShapeLayer, title:CATextLayer, backgroundView:UIView, complete:(()->Void)?) {
         self.beginIgnoringInteractionEvents()
         self.animate(indicator: indicator, unfold: unfold) {
             self.animate(title: title, selected: unfold, complete: {
@@ -191,14 +198,45 @@ extension XYXFilterMenu{
         }
     }
     
-    fileprivate func animate(filterView:UIView, show:Bool, complete:(()->Void)?){
-//        if show{
-//            superview?.addSubview(filterView)
-//            filterView.superview?.addSubview(self)
-//        }else{
-//
-//        }
+    fileprivate func animate(filterView:XYXFilterView, show:Bool, complete:(()->Void)?){
+        if show{
+            superview?.addSubview(filterView)
+            filterView.superview?.addSubview(self)
+            
+            filterView.configureUI(column: currentSelectedColumn, complete: {
+                
+                if filterView.unfoldHeightChanged == true{
+                    UIView.animate(withDuration: self.animateDuration, animations: {
+                        filterView.frame = CGRect(x: self.frame.minX, y: self.frame.maxY, width: self.frame.width, height: filterView.unfoldHeight)
+                    }, completion: { (isSucccess) in
+                        if let cp = complete{
+                            cp()
+                        }
+                    })
+                }else{
+                    filterView.frame = CGRect(x: self.frame.minX, y: self.frame.maxY, width: self.frame.width, height: filterView.unfoldHeight)
+                    if let cp = complete{
+                        cp()
+                    }
+                }
+            })
+            
+        }else{
+            UIView.animate(withDuration: animateDuration, animations: {
+                filterView.frame = CGRect(x: 0, y: filterView.frame.minY, width: filterView.frame.width, height: 0)
+            }, completion: { (isFinished) in
+                let _ = filterView.subviews.map({ (subView) in
+                    subView.removeFromSuperview()
+                })
+                filterView.removeFromSuperview()
+            })
+            if let cp = complete{
+                cp()
+            }
+        }
     }
+    
+    
 }
 
 // Create
@@ -313,9 +351,10 @@ extension XYXFilterMenu{
         }
   
         if let delegate = self.delegate {
-            delegate.menu?(menu: self, tapIndex: self.currentSelectedColumn)
+            delegate.menu?(self, tapIndex: self.currentSelectedColumn)
         }
     }
+    
 }
 
 // Extra Method
@@ -332,4 +371,5 @@ extension XYXFilterMenu{
             UIApplication.shared.endIgnoringInteractionEvents()
         }
     }
+
 }

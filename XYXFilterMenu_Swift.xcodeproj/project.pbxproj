@@ -85,8 +85,8 @@
 			children = (
 				F49F4A101FE39D290092D9CB /* XYXFilterMenu.swift */,
 				F4F06F151FE7972200A35CC4 /* XYXFilterView.swift */,
-				F49F4A141FE3AC390092D9CB /* XYXFilterIndexPath.swift */,
 				F49F4A121FE3AA390092D9CB /* XYXFilterMenuProtocol.swift */,
+				F49F4A141FE3AC390092D9CB /* XYXFilterIndexPath.swift */,
 				F49F4A161FE3B7F40092D9CB /* XYXFilterMenuConstant.swift */,
 			);
 			path = FilterMenu;

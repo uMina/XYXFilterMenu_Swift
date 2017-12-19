@@ -7,16 +7,32 @@
 //
 
 import Foundation
+import UIKit
 
-protocol XYXFilterMenuDataSource : NSObjectProtocol {
+@objc protocol XYXFilterMenuDataSource : NSObjectProtocol {
     
+    //关于MenuBar
     func numberOfColumns(menu:XYXFilterMenu) -> Int
-    func titleOfColumns(menu:XYXFilterMenu, index:Int) -> String
+    func menu(_ menu:XYXFilterMenu, titleOfColumnAt index:Int) -> String
+    
+    //关于页面设定
+    func menu(_ menu:XYXFilterMenu,typeOfColumn:Int) -> XYXFilterView.ColumnType.RawValue
+
+    @objc optional func menu(_ menu:XYXFilterMenu,widthOf tableView:UITableView, at column:Int) -> CGFloat
+    
+    @objc optional func menu(_ menu:XYXFilterMenu,filterContentHeightAt column:Int) -> CGFloat
+    
+    //关于获取显示数据
+    @objc optional func menu(_ menu:XYXFilterMenu, numberOfItemsAt indexPath:XYXFilterIndexPath) -> Int
+    @objc optional func menu(_ menu:XYXFilterMenu, titleOfItemAt indexPath:XYXFilterIndexPath) -> String
+    
+    @objc optional func menu(_ menu:XYXFilterMenu, numberOfLeafsAt indexPath:XYXFilterIndexPath) -> Int
+    @objc optional func menu(_ menu:XYXFilterMenu, titleOfLeafAt indexPath:XYXFilterIndexPath) -> String
     
 }
 
 @objc protocol XYXFilterMenuDelegate : NSObjectProtocol {
     
-    @objc optional func menu(menu:XYXFilterMenu,tapIndex:Int)
+    @objc optional func menu(_ menu:XYXFilterMenu,tapIndex:Int)
     
 }
