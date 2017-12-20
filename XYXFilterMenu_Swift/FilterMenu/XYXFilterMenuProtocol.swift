@@ -23,11 +23,12 @@ import UIKit
     @objc optional func menu(_ menu:XYXFilterMenu,filterContentHeightAt column:Int) -> CGFloat
     
     //关于获取显示数据
+    @objc optional func menu(_ menu:XYXFilterMenu, numberOfRowsAt indexPath:XYXFilterIndexPath) -> Int
+    @objc optional func menu(_ menu:XYXFilterMenu, titleOfRowAt indexPath:XYXFilterIndexPath) -> String
+    
     @objc optional func menu(_ menu:XYXFilterMenu, numberOfItemsAt indexPath:XYXFilterIndexPath) -> Int
     @objc optional func menu(_ menu:XYXFilterMenu, titleOfItemAt indexPath:XYXFilterIndexPath) -> String
     
-    @objc optional func menu(_ menu:XYXFilterMenu, numberOfLeafsAt indexPath:XYXFilterIndexPath) -> Int
-    @objc optional func menu(_ menu:XYXFilterMenu, titleOfLeafAt indexPath:XYXFilterIndexPath) -> String
     
 }
 

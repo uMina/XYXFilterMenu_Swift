@@ -25,7 +25,11 @@ class XYXFilterMenu: UIView {
         }
     }
     
-    let filterView = XYXFilterView()
+    lazy var filterView:XYXFilterView = {
+        let filter = XYXFilterView(menu: self)
+        return filter
+    }()
+    
     let backGroundView = UIView()
     
     // 关于设定的各种参数（几乎可以不变的）
@@ -111,7 +115,6 @@ class XYXFilterMenu: UIView {
         //所有的默认字体、颜色都在这里初始化
         self.layer.backgroundColor = UIColor.darkGray.cgColor
         //筛选器
-        filterView.menu = self
         filterView.unfoldHeight = XYX_SCREEN_HEIGHT - graySpaceHeight
         filterView.frame = CGRect(x: self.frame.minX, y: self.frame.maxY, width: self.frame.width, height: filterView.unfoldHeight)
         filterView.backgroundColor = UIColor(white: 1.0, alpha: 1)
