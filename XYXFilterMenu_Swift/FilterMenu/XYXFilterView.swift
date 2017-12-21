@@ -57,6 +57,7 @@ class XYXFilterView: UIView {
         let layout = UICollectionViewFlowLayout()
         let collectionView = UICollectionView(frame: CGRect.zero, collectionViewLayout: layout)
         collectionView.showsVerticalScrollIndicator = false
+        collectionView.allowsSelection = false
         collectionView.allowsMultipleSelection = true
         layout.scrollDirection = UICollectionViewScrollDirection.vertical
         layout.headerReferenceSize = CGSize(width: XYX_SCREEN_WIDTH, height: 40.0)
@@ -77,12 +78,18 @@ class XYXFilterView: UIView {
     private lazy var annexView:XYXFilterAnnexView = {
         let view = XYXFilterAnnexView.init(frame: CGRect(x: 0, y: 0, width: frame.width, height: 50.0))
         view.clearBtnCallback = {
-            
-            print("清除按钮被点击")
+            self.menu?.selectedCollectionViewIndexPaths.removeAll()
+            self.collectionView.reloadData()
         }
         
         view.confirmBtnCallback = {
-            print("确认按钮被点击")
+            
+            let title = (self.menu?.selectedCollectionViewIndexPaths.count)! > 0 ? "更多" : (self.dataSource?.menu(self.menu!, titleOfColumnAt: self.currentSelectedColumn) ?? nil)
+            let index = XYXFilterIndexPath.indexOf(self.currentSelectedColumn, nil, nil)
+            self.menu?.closeFilter(with: title, at: index)
+            
+            //TODO: - 通知外界数据更改
+            self.submitResult()
         }
         
         return view
@@ -99,7 +106,7 @@ class XYXFilterView: UIView {
         secondTableView.dataSource = self
         collectionView.delegate = self
         collectionView.dataSource = self
-//        firstTableView.backgroundColor = MENU_TABLEVIEW_CELL_BG_COLOR_WHITE
+        
         secondTableView.backgroundColor = MENU_BG_COLOR_DEFAULT
         collectionView.backgroundColor = MENU_BG_COLOR_DEFAULT
         
@@ -120,7 +127,6 @@ class XYXFilterView: UIView {
         for subview in self.subviews {
             subview.removeFromSuperview()
         }
-        //TODO:- 重置被选路径
         
         currentSelectedColumn = column
         let columnType = dataSource?.menu(menu!, typeOfColumn: column)
@@ -215,6 +221,8 @@ class XYXFilterView: UIView {
 
 }
 
+// MARK: - UITableViewDataSource & UITableViewDelegate
+
 extension XYXFilterView:UITableViewDataSource{
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -298,16 +306,14 @@ extension XYXFilterView:UITableViewDataSource{
 extension XYXFilterView:UITableViewDelegate{
     
     func tableViewType(_ type:XYXFilterView.ColumnType, append indexPath:XYXFilterIndexPath) {
-        print("被点击的路径是\(indexPath)")
+        
         if type == XYXFilterView.ColumnType.TableViewOne {
-            //print("原有被选择路径是：\(menu?.selectedTableViewIndexPaths ?? [])")
             menu?.selectedTableViewIndexPaths = (menu?.selectedTableViewIndexPaths.filter{ path -> Bool in
                 return indexPath.column == path.column ? false : true
                 })!
             menu?.selectedTableViewIndexPaths.append(indexPath)
-            print("-------路径：\(menu?.selectedTableViewIndexPaths ?? [])")
+           
         }else if type == XYXFilterView.ColumnType.TableViewTwo {
-            //print("原有被选择路径是：\(menu?.selectedTableViewIndexPaths ?? [])")
             var shouldChange = true
             menu?.selectedTableViewIndexPaths = (menu?.selectedTableViewIndexPaths.filter{ path -> Bool in
                 if indexPath.column == path.column{
@@ -323,16 +329,14 @@ extension XYXFilterView:UITableViewDelegate{
             if shouldChange{
                 menu?.selectedTableViewIndexPaths.append(indexPath)
             }
-            print("---***：\(menu?.selectedTableViewIndexPaths ?? [])")
         }
-        
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
         let columnType = dataSource?.menu(menu!, typeOfColumn: currentSelectedColumn)
         if columnType == XYXFilterView.ColumnType.TableViewOne.rawValue{
-            //TODO: 告知外界某项目被点中了
+            
             currentSelectedRow = indexPath.row
             let theSelectedIndex = XYXFilterIndexPath.indexOf(currentSelectedColumn, currentSelectedRow, currentSelectedItem)
             tableViewType(XYXFilterView.ColumnType(rawValue: columnType!)!, append: theSelectedIndex)
@@ -341,6 +345,9 @@ extension XYXFilterView:UITableViewDelegate{
             menu?.closeFilter(with: cell.textLabel?.text, at: theSelectedIndex)
             
             resetCurrentSelectedIndexPath()
+            
+            //TODO: 告知外界某项目被点中了
+            submitResult()
         }else if columnType == XYXFilterView.ColumnType.TableViewTwo.rawValue{
             if tableView == firstTableView{
                 //切换数据源
@@ -351,7 +358,7 @@ extension XYXFilterView:UITableViewDelegate{
                 }
             }
             else if tableView == secondTableView{
-            //告知外界某项目被点中了
+                
                 var theRow:Int = 0
                 if let row = currentSelectedRow{
                     theRow = row
@@ -369,6 +376,9 @@ extension XYXFilterView:UITableViewDelegate{
                 menu?.closeFilter(with: cell.textLabel?.text, at: theSelectedIndex)
                 
                 resetCurrentSelectedIndexPath()
+                
+                //TODO: 告知外界某项目被点中了
+                submitResult()
             }
         }
     
@@ -376,6 +386,8 @@ extension XYXFilterView:UITableViewDelegate{
     }
 
 }
+
+// MARK: - UICollectionViewDataSource & UICollectionViewDelegate
 
 extension XYXFilterView:UICollectionViewDataSource{
     
@@ -405,6 +417,22 @@ extension XYXFilterView:UICollectionViewDataSource{
             title = newTitle
         }
         cell.textLabel.text = title
+        
+        let theIndex = XYXFilterIndexPath.indexOf(currentSelectedColumn, indexPath.section, indexPath.row)
+        var isSelected = false
+        
+        for path in (menu?.selectedCollectionViewIndexPaths)! {
+            if path.isEqual(theIndex){
+                isSelected = true
+                break
+            }
+        }
+        
+        if isSelected == true {
+            cell.isSelected = isSelected
+            collectionView.selectItem(at: indexPath, animated: false, scrollPosition: UICollectionViewScrollPosition.left)
+        }
+
         return cell
     }
 
@@ -430,10 +458,75 @@ extension XYXFilterView:UICollectionViewDataSource{
         }
     }
     
-    
 }
 
 extension XYXFilterView:UICollectionViewDelegate{
+    
+    func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
+        let path = XYXFilterIndexPath.indexOf(currentSelectedColumn, indexPath.section, indexPath.item)
+        if let index = menu?.selectedCollectionViewIndexPaths.index(of: path) {
+            menu?.selectedCollectionViewIndexPaths.remove(at: index)
+        }
+        
+        //TODO: - 对外通知计算
+        statisticResult()
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        
+        currentSelectedRow = indexPath.section
+        var shouldAddIndex = true
+
+        if let path = currentSelectedIndexPath() {
+            if let index = menu?.selectedCollectionViewIndexPaths.index(of: path) {
+                menu?.selectedCollectionViewIndexPaths.remove(at: index)
+            }
+            if path.item == indexPath.item {
+                shouldAddIndex = false
+            }
+        }
+
+        if shouldAddIndex {
+            let theSelectedIndex = XYXFilterIndexPath.indexOf(currentSelectedColumn, indexPath.section, indexPath.item)
+            menu?.selectedCollectionViewIndexPaths.append(theSelectedIndex)
+        }
+
+        self.collectionView.reloadData()
+        
+        //TODO: - 对外通知计算
+        statisticResult()
+    }
 
 }
+
+// MARK: - Submit Data
+extension XYXFilterView{
+    
+    func statisticResult() {
+        print("尝试提交数据以供计算")
+        print("table:\((menu?.selectedTableViewIndexPaths)!)")
+        print("collection:\((menu?.selectedCollectionViewIndexPaths)!)")
+        dataSource?.statistic?(menu!, tableView: (menu?.selectedTableViewIndexPaths)!, collectionView: (menu?.selectedCollectionViewIndexPaths)!)
+    }
+    
+    func submitResult() {
+        print("提交筛选结果")
+        print("table:\((menu?.selectedTableViewIndexPaths)!)")
+        print("collection:\((menu?.selectedCollectionViewIndexPaths)!)")
+        dataSource?.submit?(menu!, tableView: (menu?.selectedTableViewIndexPaths)!, collectionView: (menu?.selectedCollectionViewIndexPaths)!)
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
 

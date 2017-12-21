@@ -132,7 +132,7 @@ class XYXFilterMenu: UIView {
 
     //MARK: - From filterView
     func closeFilter(with menuTitle:String?, at indexPath:XYXFilterIndexPath) {
-        print("关闭筛选器，title:\(menuTitle ?? "空")")
+        
         if let senderTitle = menuTitle{
             var title = senderTitle
             if let text = dataSource?.menu?(self, shouldChange: title, for: indexPath){

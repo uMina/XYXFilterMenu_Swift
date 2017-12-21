@@ -25,7 +25,7 @@ class XYXFilterIndexPath: NSObject {
             return false
         }
         let newObj = object as! XYXFilterIndexPath
-        if self.column == newObj.column && self.row == newObj.column && self.item == newObj.item {
+        if self.column == newObj.column && self.row == newObj.row && self.item == newObj.item {
             return true
         }
         return false

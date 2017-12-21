@@ -17,9 +17,9 @@ class ViewController: UIViewController {
     let source1 = ["不限","晨则省","昏则定","出必告","反必面","居有常"]
     let source2 = ["不限","业无变","事虽小","勿擅为"]
     let source3 = ["第一行","第二行","第三行"]
-    let source3_0 = ["不限","苟擅为","子道亏"]
-    let source3_1 = ["不限","物虽小","勿私藏","苟私藏","亲心伤"]
-    let source3_2 = ["不限","亲所好","力为具","亲所恶"]
+    let source3_0 = ["苟擅为","子道亏"]
+    let source3_1 = ["物虽小","勿私藏","苟私藏","亲心伤"]
+    let source3_2 = ["亲所好","力为具","亲所恶"]
    
     var selectedIndexPath:[XYXFilterIndexPath] = []
     

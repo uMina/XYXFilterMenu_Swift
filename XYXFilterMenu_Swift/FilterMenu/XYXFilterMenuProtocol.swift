@@ -30,6 +30,10 @@ import UIKit
     
     @objc optional func menu(_ menu: XYXFilterMenu, shouldChange title: String, for IndexPath: XYXFilterIndexPath) -> String? 
     
+    //用于统计数据
+    @objc optional func statistic(_ menu: XYXFilterMenu, tableView valueT:[XYXFilterIndexPath],collectionView valueC:[XYXFilterIndexPath])
+    @objc optional func submit(_ menu: XYXFilterMenu, tableView valueT:[XYXFilterIndexPath],collectionView valueC:[XYXFilterIndexPath])
+    
 }
 
 @objc protocol XYXFilterMenuDelegate : NSObjectProtocol {
