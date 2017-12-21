@@ -43,18 +43,21 @@ class XYXFilterView: UIView {
         let tableView = UITableView()
         tableView.tag = XYXFilterView.firstTabViewTag
         tableView.tableFooterView = UIView()
+        tableView.register(XYXFilterViewTableViewCell.classForCoder(), forCellReuseIdentifier: XYXFilterViewTableViewCell.reuseIdentifier())
         return tableView
     }()
     private let secondTableView:UITableView = {
         let tableView = UITableView()
         tableView.tag = XYXFilterView.secondTabViewTag
         tableView.tableFooterView = UIView()
+        tableView.register(XYXFilterViewTableViewCell.classForCoder(), forCellReuseIdentifier: XYXFilterViewTableViewCell.reuseIdentifier())
         return tableView
     }()
     private let collectionView:UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         let collectionView = UICollectionView(frame: CGRect.zero, collectionViewLayout: layout)
         collectionView.showsVerticalScrollIndicator = false
+        collectionView.allowsMultipleSelection = true
         layout.scrollDirection = UICollectionViewScrollDirection.vertical
         layout.headerReferenceSize = CGSize(width: XYX_SCREEN_WIDTH, height: 40.0)
         layout.footerReferenceSize = CGSize(width: XYX_SCREEN_WIDTH, height: 1)
@@ -71,6 +74,21 @@ class XYXFilterView: UIView {
         return collectionView
     }()
     
+    private lazy var annexView:XYXFilterAnnexView = {
+        let view = XYXFilterAnnexView.init(frame: CGRect(x: 0, y: 0, width: frame.width, height: 50.0))
+        view.clearBtnCallback = {
+            
+            print("清除按钮被点击")
+        }
+        
+        view.confirmBtnCallback = {
+            print("确认按钮被点击")
+        }
+        
+        return view
+        
+    }()
+    
     //MARK: - Life Cycle
     convenience init(menu:XYXFilterMenu) {
         self.init()
@@ -81,9 +99,10 @@ class XYXFilterView: UIView {
         secondTableView.dataSource = self
         collectionView.delegate = self
         collectionView.dataSource = self
-        firstTableView.backgroundColor = backgroundColor
-        secondTableView.backgroundColor = backgroundColor
-        collectionView.backgroundColor = backgroundColor
+//        firstTableView.backgroundColor = MENU_TABLEVIEW_CELL_BG_COLOR_WHITE
+        secondTableView.backgroundColor = MENU_BG_COLOR_DEFAULT
+        collectionView.backgroundColor = MENU_BG_COLOR_DEFAULT
+        
         self.clipsToBounds = true
     }
     
@@ -102,7 +121,6 @@ class XYXFilterView: UIView {
             subview.removeFromSuperview()
         }
         //TODO:- 重置被选路径
-        resetCurrentSelectedIndexPath()
         
         currentSelectedColumn = column
         let columnType = dataSource?.menu(menu!, typeOfColumn: column)
@@ -138,24 +156,63 @@ class XYXFilterView: UIView {
             secondTableView.reloadData()
             
         case .CollectionView:
-            collectionView.frame = CGRect(x: bounds.minX, y: bounds.minY, width: frame.width, height: height)
+            collectionView.frame = CGRect(x: bounds.minX, y: bounds.minY, width: frame.width, height: height-annexView.frame.height)
             addSubview(collectionView)
             collectionView.reloadData()
+            
+            annexView.frame = CGRect(x: bounds.minX, y: collectionView.frame.maxY, width: annexView.frame.width, height: annexView.frame.height)
+            addSubview(annexView)
+            
         }
         
         if let cp = complete{
             cp()
         }
     }
-
-    func currentSelectedIndexPath() -> XYXFilterIndexPath? {
-        return XYXFilterIndexPath.indexOf(currentSelectedColumn, currentSelectedRow, currentSelectedItem)
-    }
     
     func resetCurrentSelectedIndexPath() {
         currentSelectedRow = nil
         currentSelectedItem = nil
     }
+
+    fileprivate func currentSelectedIndexPath() -> XYXFilterIndexPath? {
+        
+        let type = dataSource?.menu(menu!, typeOfColumn: currentSelectedColumn)
+        var theSelectedIndexpath:XYXFilterIndexPath? = nil
+        
+        switch type! {
+        case ColumnType.CollectionView.rawValue:
+            for idxPath in menu!.selectedCollectionViewIndexPaths{
+                if idxPath.column == currentSelectedColumn && idxPath.row == currentSelectedRow{
+                    theSelectedIndexpath = idxPath
+                }
+            }
+            
+        case ColumnType.TableViewOne.rawValue:
+            for idxPath in menu!.selectedTableViewIndexPaths{
+                if idxPath.column == currentSelectedColumn {
+                    theSelectedIndexpath = idxPath
+                }
+            }
+            theSelectedIndexpath = theSelectedIndexpath ?? XYXFilterIndexPath.indexOf(currentSelectedColumn, 0, 0)
+            
+        case ColumnType.TableViewTwo.rawValue:
+            for idxPath in menu!.selectedTableViewIndexPaths{
+
+                if idxPath.column == currentSelectedColumn{
+                    if currentSelectedRow == nil || currentSelectedRow == idxPath.row {
+                        theSelectedIndexpath = idxPath
+                    }
+                }
+            }
+            theSelectedIndexpath = theSelectedIndexpath ?? XYXFilterIndexPath.indexOf(currentSelectedColumn, currentSelectedRow ?? 0, 0)
+            
+        default:
+            return theSelectedIndexpath
+        }
+        return theSelectedIndexpath
+    }
+
 }
 
 extension XYXFilterView:UITableViewDataSource{
@@ -179,9 +236,10 @@ extension XYXFilterView:UITableViewDataSource{
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
        
-        var cell = tableView.dequeueReusableCell(withIdentifier: "test")
+        var cell = tableView.dequeueReusableCell(withIdentifier: XYXFilterViewTableViewCell.reuseIdentifier())
         if cell == nil {
-            cell = UITableViewCell.init(style: UITableViewCellStyle.default, reuseIdentifier: "test")
+            cell = XYXFilterViewTableViewCell.init(style: .default, reuseIdentifier: XYXFilterViewTableViewCell.reuseIdentifier())
+            cell?.selectionStyle = .none
         }
         
         var title = "未定义"
@@ -191,18 +249,84 @@ extension XYXFilterView:UITableViewDataSource{
                 title = newTitle
             }
         }else if tableView == secondTableView{
-            let idxPath = XYXFilterIndexPath.indexOf(currentSelectedColumn, currentSelectedRow ?? 0, indexPath.row)
+            var theRow = currentSelectedRow ?? 0
+            if let highlightedIndexPath = currentSelectedIndexPath() {
+                theRow = highlightedIndexPath.row!
+            }
+            let idxPath = XYXFilterIndexPath.indexOf(currentSelectedColumn, theRow, indexPath.row)
+            
+            
             if let newTitle = dataSource?.menu?(menu!, titleOfItemAt: idxPath){
                 title = newTitle
             }
         }
         cell!.textLabel?.text = title
         
+        if let highlightedIndexPath = currentSelectedIndexPath() {
+            let type = dataSource?.menu(menu!, typeOfColumn: currentSelectedColumn)
+            if type! == XYXFilterView.ColumnType.TableViewTwo.rawValue{
+                firstTableView.backgroundColor = MENU_TABLEVIEW_CELL_BG_COLOR_GRAY
+            }else{
+                firstTableView.backgroundColor = MENU_TABLEVIEW_CELL_BG_COLOR_WHITE
+            }
+            if tableView == firstTableView {
+                if highlightedIndexPath.row == indexPath.row{
+                    cell?.isSelected = true
+                    cell?.backgroundColor = MENU_TABLEVIEW_CELL_BG_COLOR_WHITE
+                }else{
+                    cell?.isSelected = false
+                    if type! == XYXFilterView.ColumnType.TableViewTwo.rawValue{
+                        cell?.backgroundColor = MENU_TABLEVIEW_CELL_BG_COLOR_GRAY
+                    }else{
+                        cell?.backgroundColor = MENU_TABLEVIEW_CELL_BG_COLOR_WHITE
+                    }
+                }
+                
+            }else if tableView == secondTableView{
+                if highlightedIndexPath.item == indexPath.row{
+                    cell?.isSelected = true
+                }else{
+                    cell?.isSelected = false
+                }
+                cell?.backgroundColor = MENU_TABLEVIEW_CELL_BG_COLOR_WHITE
+            }
+        }
         return cell!
     }
 }
 
 extension XYXFilterView:UITableViewDelegate{
+    
+    func tableViewType(_ type:XYXFilterView.ColumnType, append indexPath:XYXFilterIndexPath) {
+        print("被点击的路径是\(indexPath)")
+        if type == XYXFilterView.ColumnType.TableViewOne {
+            //print("原有被选择路径是：\(menu?.selectedTableViewIndexPaths ?? [])")
+            menu?.selectedTableViewIndexPaths = (menu?.selectedTableViewIndexPaths.filter{ path -> Bool in
+                return indexPath.column == path.column ? false : true
+                })!
+            menu?.selectedTableViewIndexPaths.append(indexPath)
+            print("-------路径：\(menu?.selectedTableViewIndexPaths ?? [])")
+        }else if type == XYXFilterView.ColumnType.TableViewTwo {
+            //print("原有被选择路径是：\(menu?.selectedTableViewIndexPaths ?? [])")
+            var shouldChange = true
+            menu?.selectedTableViewIndexPaths = (menu?.selectedTableViewIndexPaths.filter{ path -> Bool in
+                if indexPath.column == path.column{
+                    if indexPath.column != path.column && indexPath.item == 0{
+                        shouldChange = false
+                        return true
+                    }
+                    return false
+                }
+                return true
+                })!
+            
+            if shouldChange{
+                menu?.selectedTableViewIndexPaths.append(indexPath)
+            }
+            print("---***：\(menu?.selectedTableViewIndexPaths ?? [])")
+        }
+        
+    }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
@@ -211,23 +335,39 @@ extension XYXFilterView:UITableViewDelegate{
             //TODO: 告知外界某项目被点中了
             currentSelectedRow = indexPath.row
             let theSelectedIndex = XYXFilterIndexPath.indexOf(currentSelectedColumn, currentSelectedRow, currentSelectedItem)
-            print("被点击的路径是\(theSelectedIndex)")
+            tableViewType(XYXFilterView.ColumnType(rawValue: columnType!)!, append: theSelectedIndex)
             
-            print("然后关闭页面，并对选择路径清零")
+            let cell = tableView.cellForRow(at: indexPath) as! XYXFilterViewTableViewCell
+            menu?.closeFilter(with: cell.textLabel?.text, at: theSelectedIndex)
+            
             resetCurrentSelectedIndexPath()
         }else if columnType == XYXFilterView.ColumnType.TableViewTwo.rawValue{
             if tableView == firstTableView{
                 //切换数据源
-                currentSelectedRow = indexPath.row
-                secondTableView.reloadData()
+                if currentSelectedRow != indexPath.row{
+                    currentSelectedRow = indexPath.row
+                    firstTableView.reloadData()
+                    secondTableView.reloadData()
+                }
             }
             else if tableView == secondTableView{
-            //TODO: 告知外界某项目被点中了
+            //告知外界某项目被点中了
+                var theRow:Int = 0
+                if let row = currentSelectedRow{
+                    theRow = row
+                }else{
+                    if let path = currentSelectedIndexPath(){
+                        theRow = path.row!
+                    }
+                }
                 currentSelectedItem = indexPath.row
-                let theSelectedIndex = XYXFilterIndexPath.indexOf(currentSelectedColumn, currentSelectedRow ?? 0, currentSelectedItem)
-                print("被点击的路径是\(theSelectedIndex)")
                 
-                print("然后关闭页面，并对选择路径清零")
+                let theSelectedIndex = XYXFilterIndexPath.indexOf(currentSelectedColumn, theRow, currentSelectedItem)
+                tableViewType(XYXFilterView.ColumnType(rawValue: columnType!)!, append: theSelectedIndex)
+                
+                let cell = tableView.cellForRow(at: indexPath) as! XYXFilterViewTableViewCell
+                menu?.closeFilter(with: cell.textLabel?.text, at: theSelectedIndex)
+                
                 resetCurrentSelectedIndexPath()
             }
         }

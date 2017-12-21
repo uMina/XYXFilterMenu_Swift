@@ -19,7 +19,6 @@ import UIKit
     func menu(_ menu:XYXFilterMenu,typeOfColumn:Int) -> XYXFilterView.ColumnType.RawValue
 
     @objc optional func menu(_ menu:XYXFilterMenu,widthOf tableView:UITableView, at column:Int) -> CGFloat
-    
     @objc optional func menu(_ menu:XYXFilterMenu,filterContentHeightAt column:Int) -> CGFloat
     
     //关于获取显示数据
@@ -29,6 +28,7 @@ import UIKit
     @objc optional func menu(_ menu:XYXFilterMenu, numberOfItemsAt indexPath:XYXFilterIndexPath) -> Int
     @objc optional func menu(_ menu:XYXFilterMenu, titleOfItemAt indexPath:XYXFilterIndexPath) -> String
     
+    @objc optional func menu(_ menu: XYXFilterMenu, shouldChange title: String, for IndexPath: XYXFilterIndexPath) -> String? 
     
 }
 

@@ -32,6 +32,9 @@ class XYXFilterMenu: UIView {
     
     let backGroundView = UIView()
     
+    var selectedTableViewIndexPaths:[XYXFilterIndexPath] = []
+    var selectedCollectionViewIndexPaths:[XYXFilterIndexPath] = []
+    
     // 关于设定的各种参数（几乎可以不变的）
     var numOfMenu = 1
     var menuBarBGColorDefault = MENU_BG_COLOR_DEFAULT
@@ -125,6 +128,32 @@ class XYXFilterMenu: UIView {
         let gesture = UITapGestureRecognizer.init(target: self, action: #selector(backgroundTapped(tapGesture:)))
         backGroundView.addGestureRecognizer(gesture)
         
+    }
+
+    //MARK: - From filterView
+    func closeFilter(with menuTitle:String?, at indexPath:XYXFilterIndexPath) {
+        print("关闭筛选器，title:\(menuTitle ?? "空")")
+        if let senderTitle = menuTitle{
+            var title = senderTitle
+            if let text = dataSource?.menu?(self, shouldChange: title, for: indexPath){
+                title = text
+            }
+            
+            let titleLayer = titleLayers[indexPath.column!]
+            titleLayer.string = title
+            let size = calculateTitleSizeWithString(string: title)
+            let sizeWidth = (size.width < ((self.frame.size.width / CGFloat(numOfMenu)) - self.menuTitleMargin)) ? size.width : (self.frame.size.width / CGFloat(numOfMenu) - self.menuTitleMargin)
+            titleLayer.bounds = CGRect(x: 0, y: 0, width: sizeWidth, height: size.height)
+            
+            let indicatorLayer = indicatorLayers[indexPath.column!]
+            let position = CGPoint(x: titleLayer.frame.maxX, y: self.frame.height/2)
+            indicatorLayer.position = CGPoint(x:(position.x + self.menuTitleMargin/4), y:(position.y + 2))
+        }
+        
+        animate(unfold: false, filterView: filterView, indicator: indicatorLayers[indexPath.column!], title: titleLayers[indexPath.column!], backgroundView: backGroundView) {
+            self.isDisplayed = false
+            self.menuBgLayers[self.currentSelectedColumn].backgroundColor = self.menuBarBGColorDefault.cgColor
+        }
     }
 }
 
@@ -270,7 +299,7 @@ extension XYXFilterMenu{
         let bound = path.cgPath.copy(strokingWithWidth: layer.lineWidth, lineCap: CGLineCap.butt, lineJoin: CGLineJoin.miter, miterLimit: layer.miterLimit, transform: tranform)
         layer.bounds = bound.boundingBox
         
-        layer.position = CGPoint(x:(position.x + self.menuTitleMargin/4), y:(position.y + 2));
+        layer.position = CGPoint(x:(position.x + self.menuTitleMargin/4), y:(position.y + 2))
         
         return layer;
     }
@@ -317,6 +346,7 @@ extension XYXFilterMenu{
         animate(unfold: false, filterView: filterView, indicator: indicatorLayers[currentSelectedColumn], title: titleLayers[currentSelectedColumn], backgroundView: backGroundView) {
             self.isDisplayed = false
             self.menuBgLayers[self.currentSelectedColumn].backgroundColor = self.menuBarBGColorDefault.cgColor
+            self.filterView.resetCurrentSelectedIndexPath()
         }
     }
     
@@ -343,6 +373,7 @@ extension XYXFilterMenu{
                 self.currentSelectedColumn = tapIndex
                 self.isDisplayed = false
                 self.menuBgLayers[tapIndex].backgroundColor = self.menuBarBGColorDefault.cgColor
+                self.filterView.resetCurrentSelectedIndexPath()
             })
 
         } else {

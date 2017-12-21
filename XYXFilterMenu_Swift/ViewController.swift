@@ -12,14 +12,16 @@ class ViewController: UIViewController {
 
     let titles = ["第1列","第2列","第3列","第4列"]
     let source0 = ["第一行","第二行"]
-    let source0_0 = ["A","B","C","D","E","F","G"]
-    let source0_1 = ["a","b","c","d","e","f","g","h","i","j"]
-    let source1 = ["A","B","C","D","E"]
-    let source2 = ["a","b","c","d","e","f","g"]
+    let source0_0 = ["不限","弟子规","圣人训","首孝悌","次谨信","泛爱众","而亲仁","有余力","则学文"]
+    let source0_1 = ["不限","父母呼","应勿缓","父母命","行勿懒","父母教","须敬听","父母责","须顺承","冬则温","夏则凊"]
+    let source1 = ["不限","晨则省","昏则定","出必告","反必面","居有常"]
+    let source2 = ["不限","业无变","事虽小","勿擅为"]
     let source3 = ["第一行","第二行","第三行"]
-    let source3_0 = ["A","B"]
-    let source3_1 = ["A","B","C","D"]
-    let source3_2 = ["A","B","C"]
+    let source3_0 = ["不限","苟擅为","子道亏"]
+    let source3_1 = ["不限","物虽小","勿私藏","苟私藏","亲心伤"]
+    let source3_2 = ["不限","亲所好","力为具","亲所恶"]
+   
+    var selectedIndexPath:[XYXFilterIndexPath] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -35,9 +37,16 @@ class ViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
 
+    
 }
 
 extension ViewController:XYXFilterMenuDataSource{
+    func menu(_ menu: XYXFilterMenu, shouldChange title: String, for indexPath: XYXFilterIndexPath) -> String? {
+        return title == "不限" ? titles[indexPath.column!] : nil
+    }
+    
+    //-----------------------------------------------
+    
     func menu(_ menu: XYXFilterMenu, numberOfRowsAt indexPath: XYXFilterIndexPath) -> Int {
         guard indexPath.column != nil else {
             return 0
@@ -167,6 +176,7 @@ extension ViewController:XYXFilterMenuDataSource{
         }
         return 300.0
     }
+
 }
 
 extension ViewController:XYXFilterMenuDelegate{
