@@ -304,8 +304,8 @@ extension XYXFilterView:UITableViewDataSource{
 
 extension XYXFilterView:UITableViewDelegate{
     
-    func tableViewType(_ type:XYXFilterView.ColumnType, append indexPath:XYXFilterIndexPath) {
-        
+    func tableViewType(_ type:XYXFilterView.ColumnType, append indexPath:XYXFilterIndexPath) -> Bool {
+        var shouldChange = true
         if type == XYXFilterView.ColumnType.TableViewOne {
             menu?.selectedTableViewIndexPaths = (menu?.selectedTableViewIndexPaths.filter{ path -> Bool in
                 return indexPath.column == path.column ? false : true
@@ -313,10 +313,12 @@ extension XYXFilterView:UITableViewDelegate{
             menu?.selectedTableViewIndexPaths.append(indexPath)
            
         }else if type == XYXFilterView.ColumnType.TableViewTwo {
-            var shouldChange = true
+            
             menu?.selectedTableViewIndexPaths = (menu?.selectedTableViewIndexPaths.filter{ path -> Bool in
                 if indexPath.column == path.column{
-                    if indexPath.column != path.column && indexPath.item == 0{
+                    if indexPath.row != path.row && indexPath.item == 0{
+                        //通常不限选项的item==0
+                        //当在双列tableView时，如果之前选中了"非不限"选项，再选中相同column而不同row的"不限选项"时，筛选结果不做改变
                         shouldChange = false
                         return true
                     }
@@ -329,6 +331,7 @@ extension XYXFilterView:UITableViewDelegate{
                 menu?.selectedTableViewIndexPaths.append(indexPath)
             }
         }
+        return shouldChange
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -338,7 +341,7 @@ extension XYXFilterView:UITableViewDelegate{
             
             currentSelectedRow = indexPath.row
             let theSelectedIndex = XYXFilterIndexPath.indexOf(currentSelectedColumn, currentSelectedRow, currentSelectedItem)
-            tableViewType(XYXFilterView.ColumnType(rawValue: columnType!)!, append: theSelectedIndex)
+            let _ = tableViewType(XYXFilterView.ColumnType(rawValue: columnType!)!, append: theSelectedIndex)
             
             let cell = tableView.cellForRow(at: indexPath) as! XYXFilterViewTableViewCell
             menu?.closeFilter(with: cell.textLabel?.text, at: theSelectedIndex)
@@ -346,6 +349,7 @@ extension XYXFilterView:UITableViewDelegate{
             resetCurrentSelectedIndexPath()
             
             submitResult()
+            
         }else if columnType == XYXFilterView.ColumnType.TableViewTwo.rawValue{
             if tableView == firstTableView{
                 //切换数据源
@@ -356,7 +360,6 @@ extension XYXFilterView:UITableViewDelegate{
                 }
             }
             else if tableView == secondTableView{
-                
                 var theRow:Int = 0
                 if let row = currentSelectedRow{
                     theRow = row
@@ -368,11 +371,13 @@ extension XYXFilterView:UITableViewDelegate{
                 currentSelectedItem = indexPath.row
                 
                 let theSelectedIndex = XYXFilterIndexPath.indexOf(currentSelectedColumn, theRow, currentSelectedItem)
-                tableViewType(XYXFilterView.ColumnType(rawValue: columnType!)!, append: theSelectedIndex)
-                
-                let cell = tableView.cellForRow(at: indexPath) as! XYXFilterViewTableViewCell
-                menu?.closeFilter(with: cell.textLabel?.text, at: theSelectedIndex)
-                
+                let shouldChange = tableViewType(XYXFilterView.ColumnType(rawValue: columnType!)!, append: theSelectedIndex)
+                if shouldChange == true{
+                    let cell = tableView.cellForRow(at: indexPath) as! XYXFilterViewTableViewCell
+                    menu?.closeFilter(with: cell.textLabel?.text, at: theSelectedIndex)
+                }else{
+                    menu?.closeFilter(nil)
+                }
                 resetCurrentSelectedIndexPath()
                 
                 submitResult()

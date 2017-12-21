@@ -149,12 +149,18 @@ class XYXFilterMenu: UIView {
             let position = CGPoint(x: titleLayer.frame.maxX, y: self.frame.height/2)
             indicatorLayer.position = CGPoint(x:(position.x + self.menuTitleMargin/4), y:(position.y + 2))
         }
+        closeFilter(indexPath)
+    }
+    
+    func closeFilter(_ forIndexPath:XYXFilterIndexPath?){
         
-        animate(unfold: false, filterView: filterView, indicator: indicatorLayers[indexPath.column!], title: titleLayers[indexPath.column!], backgroundView: backGroundView) {
+        let column = forIndexPath == nil ? currentSelectedColumn : (forIndexPath?.column)!
+        animate(unfold: false, filterView: filterView, indicator: indicatorLayers[column], title: titleLayers[column], backgroundView: backGroundView) {
             self.isDisplayed = false
             self.menuBgLayers[self.currentSelectedColumn].backgroundColor = self.menuBarBGColorDefault.cgColor
         }
     }
+    
 }
 
 // Animate
