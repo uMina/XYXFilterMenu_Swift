@@ -88,7 +88,6 @@ class XYXFilterView: UIView {
             let index = XYXFilterIndexPath.indexOf(self.currentSelectedColumn, nil, nil)
             self.menu?.closeFilter(with: title, at: index)
             
-            //TODO: - 通知外界数据更改
             self.submitResult()
         }
         
@@ -346,7 +345,6 @@ extension XYXFilterView:UITableViewDelegate{
             
             resetCurrentSelectedIndexPath()
             
-            //TODO: 告知外界某项目被点中了
             submitResult()
         }else if columnType == XYXFilterView.ColumnType.TableViewTwo.rawValue{
             if tableView == firstTableView{
@@ -377,12 +375,9 @@ extension XYXFilterView:UITableViewDelegate{
                 
                 resetCurrentSelectedIndexPath()
                 
-                //TODO: 告知外界某项目被点中了
                 submitResult()
             }
         }
-    
-        
     }
 
 }
@@ -468,7 +463,6 @@ extension XYXFilterView:UICollectionViewDelegate{
             menu?.selectedCollectionViewIndexPaths.remove(at: index)
         }
         
-        //TODO: - 对外通知计算
         statisticResult()
     }
     
@@ -493,13 +487,13 @@ extension XYXFilterView:UICollectionViewDelegate{
 
         self.collectionView.reloadData()
         
-        //TODO: - 对外通知计算
         statisticResult()
     }
 
 }
 
 // MARK: - Submit Data
+
 extension XYXFilterView{
     
     func statisticResult() {
