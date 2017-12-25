@@ -17,7 +17,6 @@
 		F49F4A151FE3AC390092D9CB /* XYXFilterIndexPath.swift in Sources */ = {isa = PBXBuildFile; fileRef = F49F4A141FE3AC390092D9CB /* XYXFilterIndexPath.swift */; };
 		F49F4A171FE3B7F40092D9CB /* XYXFilterMenuConstant.swift in Sources */ = {isa = PBXBuildFile; fileRef = F49F4A161FE3B7F40092D9CB /* XYXFilterMenuConstant.swift */; };
 		F49F4A1A1FE3D73C0092D9CB /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F49F4A191FE3D73C0092D9CB /* CoreGraphics.framework */; };
-		F49F4A1C1FE3E4890092D9CB /* RevealServer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F49F4A1B1FE3E4890092D9CB /* RevealServer.framework */; };
 		F4F06F161FE7972200A35CC4 /* XYXFilterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4F06F151FE7972200A35CC4 /* XYXFilterView.swift */; };
 		F4F06F181FEA09D100A35CC4 /* XYXFilterViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4F06F171FEA09D100A35CC4 /* XYXFilterViewCell.swift */; };
 /* End PBXBuildFile section */
@@ -35,7 +34,6 @@
 		F49F4A141FE3AC390092D9CB /* XYXFilterIndexPath.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XYXFilterIndexPath.swift; sourceTree = "<group>"; };
 		F49F4A161FE3B7F40092D9CB /* XYXFilterMenuConstant.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XYXFilterMenuConstant.swift; sourceTree = "<group>"; };
 		F49F4A191FE3D73C0092D9CB /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
-		F49F4A1B1FE3E4890092D9CB /* RevealServer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = RevealServer.framework; sourceTree = "<group>"; };
 		F4F06F151FE7972200A35CC4 /* XYXFilterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XYXFilterView.swift; sourceTree = "<group>"; };
 		F4F06F171FEA09D100A35CC4 /* XYXFilterViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XYXFilterViewCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -45,7 +43,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F49F4A1C1FE3E4890092D9CB /* RevealServer.framework in Frameworks */,
 				F49F4A1A1FE3D73C0092D9CB /* CoreGraphics.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -108,7 +105,6 @@
 		F49F4A181FE3D73C0092D9CB /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				F49F4A1B1FE3E4890092D9CB /* RevealServer.framework */,
 				F49F4A191FE3D73C0092D9CB /* CoreGraphics.framework */,
 			);
 			name = Frameworks;
@@ -124,7 +120,6 @@
 				F49F49F51FE39CEC0092D9CB /* Sources */,
 				F49F49F61FE39CEC0092D9CB /* Frameworks */,
 				F49F49F71FE39CEC0092D9CB /* Resources */,
-				F49F4A1E1FE3E52A0092D9CB /* Integrate Reveal Server */,
 			);
 			buildRules = (
 			);
@@ -181,23 +176,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
-
-/* Begin PBXShellScriptBuildPhase section */
-		F49F4A1E1FE3E52A0092D9CB /* Integrate Reveal Server */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Integrate Reveal Server";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "export REVEAL_SERVER_FILENAME=\"RevealServer.framework\"\n\n# Update this path to point to the location of RevealServer.framework in your project.\nexport REVEAL_SERVER_PATH=\"${SRCROOT}/${REVEAL_SERVER_FILENAME}\"\n\n# If configuration is not Debug, skip this script.\n[ \"${CONFIGURATION}\" != \"Debug\" ] && exit 0\n\n# If RevealServer.framework exists at the specified path, run code signing script.\nif [ -d \"${REVEAL_SERVER_PATH}\" ]; then\n\"${REVEAL_SERVER_PATH}/Scripts/copy_and_codesign_revealserver.sh\"\nelse\necho \"Cannot find RevealServer.framework, so Reveal Server will not be started for your app.\"\nfi";
-		};
-/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		F49F49F51FE39CEC0092D9CB /* Sources */ = {
@@ -359,11 +337,7 @@
 				INFOPLIST_FILE = XYXFilterMenu_Swift/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks $(inherited) @executable_path/Frameworks";
-				OTHER_LDFLAGS = (
-					"-ObjC",
-					"-weak_framework",
-					RevealServer,
-				);
+				OTHER_LDFLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = "Teresa.XYXFilterMenu-Swift";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.0;
@@ -386,11 +360,7 @@
 				INFOPLIST_FILE = XYXFilterMenu_Swift/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks $(inherited) @executable_path/Frameworks";
-				OTHER_LDFLAGS = (
-					"-ObjC",
-					"-weak_framework",
-					RevealServer,
-				);
+				OTHER_LDFLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = "Teresa.XYXFilterMenu-Swift";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.0;

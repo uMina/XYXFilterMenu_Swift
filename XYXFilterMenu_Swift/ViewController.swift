@@ -20,8 +20,6 @@ class ViewController: UIViewController {
     let source3_0 = ["苟擅为","子道亏"]
     let source3_1 = ["物虽小","勿私藏","苟私藏","亲心伤"]
     let source3_2 = ["亲所好","力为具","亲所恶"]
-   
-    var selectedIndexPath:[XYXFilterIndexPath] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -172,7 +170,12 @@ extension ViewController:XYXFilterMenuDataSource{
     
     func menu(_ menu: XYXFilterMenu, filterContentHeightAt column: Int) -> CGFloat {
         if column == 3 {
-            return XYX_SCREEN_HEIGHT - menu.frame.maxY
+            
+            if UIScreen.main.bounds.height == 812{
+                return XYX_SCREEN_HEIGHT - menu.frame.maxY - 34
+            }else{
+                return XYX_SCREEN_HEIGHT - menu.frame.maxY
+            }
         }
         return 300.0
     }

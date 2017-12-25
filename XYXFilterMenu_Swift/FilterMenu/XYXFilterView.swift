@@ -147,10 +147,10 @@ class XYXFilterView: UIView {
             var firstWidth = frame.width/2
             var secondWidth = frame.width/2
 
-            if let width = dataSource?.menu!(menu!, widthOf: firstTableView, at: column){
+            if let width = dataSource?.menu?(menu!, widthOf: firstTableView, at: column){
                 firstWidth = width
             }
-            if let width = dataSource?.menu!(menu!, widthOf: secondTableView, at: column){
+            if let width = dataSource?.menu?(menu!, widthOf: secondTableView, at: column){
                 secondWidth = width
             }
             firstTableView.frame = CGRect(x: bounds.minX, y: bounds.minY, width: firstWidth, height: height)

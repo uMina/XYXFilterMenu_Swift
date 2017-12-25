@@ -349,6 +349,10 @@ extension XYXFilterMenu{
         guard currentSelectedColumn >= 0 else{
             return
         }
+        let type = dataSource?.menu(self, typeOfColumn: currentSelectedColumn)
+        guard type != XYXFilterView.ColumnType.CollectionView.rawValue else{
+            return
+        }
         animate(unfold: false, filterView: filterView, indicator: indicatorLayers[currentSelectedColumn], title: titleLayers[currentSelectedColumn], backgroundView: backGroundView) {
             self.isDisplayed = false
             self.menuBgLayers[self.currentSelectedColumn].backgroundColor = self.menuBarBGColorDefault.cgColor
