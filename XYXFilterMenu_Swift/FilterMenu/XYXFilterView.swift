@@ -227,7 +227,7 @@ extension XYXFilterView:UITableViewDataSource{
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         var count = 0
         
-        let indexPath = XYXFilterIndexPath.indexOf(currentSelectedColumn, section, nil)
+        let indexPath = currentSelectedIndexPath()!
         
         if tableView == firstTableView{
             if let newCount = dataSource?.menu?(menu!, numberOfRowsAt: indexPath){
