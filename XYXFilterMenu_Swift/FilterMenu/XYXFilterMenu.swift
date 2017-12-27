@@ -367,6 +367,11 @@ extension XYXFilterMenu{
         let touchPoint = tapGesture.location(in: self)
         let tapIndex = Int(touchPoint.x / (self.frame.width / CGFloat(numOfMenu)))
         
+        let typeRaw = dataSource?.menu(self, typeOfColumn: currentSelectedColumn)
+        if typeRaw! == XYXFilterView.ColumnType.CollectionView.rawValue && isDisplayed {
+            filterView.submitResult()
+        }
+        
         for idx in 0...numOfMenu-1{
             if idx != tapIndex{
                 animate(indicator: indicatorLayers[idx], unfold: false, complete: {
