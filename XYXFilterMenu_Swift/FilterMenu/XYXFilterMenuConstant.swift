@@ -8,6 +8,7 @@
 
 import UIKit
 
+
 //--------------- 设备尺寸 ---------------//
 let XYX_SCREEN_WIDTH = UIScreen.main.bounds.size.width
 let XYX_SCREEN_HEIGHT = UIScreen.main.bounds.size.height
@@ -44,3 +45,5 @@ let MENU_ANNEX_BG_COLOR = UIColor(red: 250.0/255, green: 250.0/255, blue: 250.0/
 let MENU_TABLEVIEW_CELL_TEXT_FONTSIZE:CGFloat = 14.0
 let MENU_COLLECTION_CELL_TEXT_FONTSIZE:CGFloat = 14.0
 let MENU_COLLECTION_HEADER_TEXT_FONTSIZE:CGFloat = 14.0
+
+let COLLECTION_CELL_DEFAULT_SIZE = CGSize.init(width:floor((XYX_SCREEN_WIDTH-50)/4), height: 30)

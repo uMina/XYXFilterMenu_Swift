@@ -161,6 +161,27 @@ class XYXFilterMenu: UIView {
         }
     }
     
+    //MARK: - Reset
+    func resetMenu() {
+        self.filterView.clearSelectedData()
+        selectedTableViewIndexPaths.removeAll()
+        selectedCollectionViewIndexPaths.removeAll()
+        resetMenuTitle()
+    }
+    
+    func resetMenuTitle() {
+        for idx in 0...(numOfMenu-1) {
+            let text = self.titleLayers[idx]
+            let indicator = self.indicatorLayers[idx]
+            
+            let titleString = dataSource?.menu(self, titleOfColumnAt: idx)
+            let size = self.calculateTitleSizeWithString(string: titleString!)
+            let sizewidth = (size.width < ((self.frame.size.width / CGFloat(numOfMenu)) - self.menuTitleMargin)) ? size.width : (self.frame.size.width / CGFloat(numOfMenu) - self.menuTitleMargin)
+            text.bounds = CGRect(x: 0, y: 0, width: sizewidth, height: size.height)
+            text.string = titleString
+            indicator.position = CGPoint(x: text.frame.maxX + self.menuTitleMargin/4, y: indicator.position.y)
+        }
+    }
 }
 
 // Animate

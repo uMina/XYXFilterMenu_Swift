@@ -218,6 +218,17 @@ class XYXFilterView: UIView {
         return theSelectedIndexpath
     }
 
+    func clearSelectedData() {
+        if self.firstTableView.superview != nil {
+            self.firstTableView.reloadData()
+        }
+        if self.secondTableView.superview != nil {
+            self.secondTableView.reloadData()
+        }
+        if self.collectionView.superview != nil {
+            self.collectionView.reloadData()
+        }
+    }
 }
 
 // MARK: - UITableViewDataSource & UITableViewDelegate
@@ -460,7 +471,17 @@ extension XYXFilterView:UICollectionViewDataSource{
     
 }
 
-extension XYXFilterView:UICollectionViewDelegate{
+extension XYXFilterView:UICollectionViewDelegateFlowLayout{
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        
+        let path = XYXFilterIndexPath.indexOf(currentSelectedColumn, indexPath.section, indexPath.item)
+        if let size = dataSource?.menu?(menu!, sizeOfCollectionCellAtIndexPath: path){
+            let newSize = (size.width == CGSize.zero.width) && (size.height == CGSize.zero.height) ? COLLECTION_CELL_DEFAULT_SIZE : size
+            return newSize
+        }
+        return COLLECTION_CELL_DEFAULT_SIZE
+    }
     
     func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
         let path = XYXFilterIndexPath.indexOf(currentSelectedColumn, indexPath.section, indexPath.item)

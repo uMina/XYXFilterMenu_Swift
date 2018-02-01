@@ -20,6 +20,7 @@ import UIKit
 
     @objc optional func menu(_ menu:XYXFilterMenu,widthOf tableView:UITableView, at column:Int) -> CGFloat
     @objc optional func menu(_ menu:XYXFilterMenu,filterContentHeightAt column:Int) -> CGFloat
+    @objc optional func menu(_ menu:XYXFilterMenu,sizeOfCollectionCellAtIndexPath index:XYXFilterIndexPath) -> CGSize
     
     //关于获取显示数据
     @objc optional func menu(_ menu:XYXFilterMenu, numberOfRowsAt indexPath:XYXFilterIndexPath) -> Int
