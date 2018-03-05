@@ -35,6 +35,9 @@ import UIKit
     @objc optional func statistic(_ menu: XYXFilterMenu, tableView valueT:[XYXFilterIndexPath],collectionView valueC:[XYXFilterIndexPath])
     @objc optional func submit(_ menu: XYXFilterMenu, tableView valueT:[XYXFilterIndexPath],collectionView valueC:[XYXFilterIndexPath])
     
+    //用于预设备选项
+    @objc optional func titleOfRows(_ menu:XYXFilterMenu, indexPath:XYXFilterIndexPath) -> [String]?
+    @objc optional func titleOfItems(_ menu:XYXFilterMenu, indexPath:XYXFilterIndexPath) -> [String]?
 }
 
 @objc protocol XYXFilterMenuDelegate : NSObjectProtocol {

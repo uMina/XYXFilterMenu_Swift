@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		F448551E204D34FA002BC1D2 /* XYXFilterMenu_ExtraInterface.swift in Sources */ = {isa = PBXBuildFile; fileRef = F448551D204D34FA002BC1D2 /* XYXFilterMenu_ExtraInterface.swift */; };
 		F49F49FD1FE39CEC0092D9CB /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F49F49FC1FE39CEC0092D9CB /* AppDelegate.swift */; };
 		F49F49FF1FE39CEC0092D9CB /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F49F49FE1FE39CEC0092D9CB /* ViewController.swift */; };
 		F49F4A021FE39CEC0092D9CB /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F49F4A001FE39CEC0092D9CB /* Main.storyboard */; };
@@ -22,6 +23,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		F448551D204D34FA002BC1D2 /* XYXFilterMenu_ExtraInterface.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XYXFilterMenu_ExtraInterface.swift; sourceTree = "<group>"; };
 		F49F49F91FE39CEC0092D9CB /* XYXFilterMenu_Swift.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = XYXFilterMenu_Swift.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F49F49FC1FE39CEC0092D9CB /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		F49F49FE1FE39CEC0092D9CB /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -83,6 +85,7 @@
 			isa = PBXGroup;
 			children = (
 				F49F4A101FE39D290092D9CB /* XYXFilterMenu.swift */,
+				F448551D204D34FA002BC1D2 /* XYXFilterMenu_ExtraInterface.swift */,
 				F4F06F151FE7972200A35CC4 /* XYXFilterView.swift */,
 				F49F4A121FE3AA390092D9CB /* XYXFilterMenuProtocol.swift */,
 				F49F4A141FE3AC390092D9CB /* XYXFilterIndexPath.swift */,
@@ -189,6 +192,7 @@
 				F4F06F181FEA09D100A35CC4 /* XYXFilterViewCell.swift in Sources */,
 				F49F4A111FE39D290092D9CB /* XYXFilterMenu.swift in Sources */,
 				F49F49FF1FE39CEC0092D9CB /* ViewController.swift in Sources */,
+				F448551E204D34FA002BC1D2 /* XYXFilterMenu_ExtraInterface.swift in Sources */,
 				F49F49FD1FE39CEC0092D9CB /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -390,7 +390,9 @@ extension XYXFilterMenu{
         
         let typeRaw = dataSource?.menu(self, typeOfColumn: currentSelectedColumn)
         if typeRaw! == XYXFilterView.ColumnType.CollectionView.rawValue && isDisplayed {
-            filterView.submitResult()
+            DispatchQueue.global(qos: .background).async { [unowned self] in
+                self.filterView.submitResult()
+            }
         }
         
         for idx in 0...numOfMenu-1{

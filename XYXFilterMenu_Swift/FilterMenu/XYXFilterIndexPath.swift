@@ -13,7 +13,7 @@ class XYXFilterIndexPath: NSObject {
     var row:Int?
     var item:Int?
     
-    fileprivate convenience init(_ column:Int, _ row:Int?, _ item:Int?) {
+    fileprivate convenience init(_ column:Int, _ row:Int?, _ item:Int? = nil) {
         self.init()
         self.column = column
         self.row = row
@@ -37,7 +37,7 @@ class XYXFilterIndexPath: NSObject {
         }
     }
     
-    class func indexOf(_ column:Int, _ row:Int?, _ item:Int?) -> XYXFilterIndexPath{
+    class func indexOf(_ column:Int, _ row:Int?, _ item:Int? = nil) -> XYXFilterIndexPath{
         let indexPath = XYXFilterIndexPath.init(column, row, item)
         return indexPath
     }
