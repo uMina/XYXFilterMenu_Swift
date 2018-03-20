@@ -385,6 +385,16 @@ extension XYXFilterMenu{
         guard self.dataSource != nil else {
             return
         }
+        
+        if tapGesture.isEnabled == true{
+            tapGesture.isEnabled = false
+            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now()+0.5, execute: {
+                tapGesture.isEnabled = true
+            })
+        }else{
+            return
+        }
+        
         let touchPoint = tapGesture.location(in: self)
         let tapIndex = Int(touchPoint.x / (self.frame.width / CGFloat(numOfMenu)))
         
