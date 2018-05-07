@@ -80,6 +80,7 @@ class XYXFilterView: UIView {
         view.clearBtnCallback = {
             self.menu?.selectedCollectionViewIndexPaths.removeAll()
             self.collectionView.reloadData()
+            self.resetCurrentSelectedIndexPath()
         }
         
         view.confirmBtnCallback = {
@@ -87,8 +88,9 @@ class XYXFilterView: UIView {
             let title = (self.menu?.selectedCollectionViewIndexPaths.count)! > 0 ? "更多" : (self.dataSource?.menu(self.menu!, titleOfColumnAt: self.currentSelectedColumn) ?? nil)
             let index = XYXFilterIndexPath.indexOf(self.currentSelectedColumn, nil, nil)
             self.menu?.closeFilter(with: title, at: index)
-            
+            self.statisticResult()
             self.submitResult()
+            self.resetCurrentSelectedIndexPath()
         }
         
         return view
@@ -176,46 +178,51 @@ class XYXFilterView: UIView {
     }
     
     func resetCurrentSelectedIndexPath() {
+        print("resetCurrentSelectedIndexPath()被调用了")
         currentSelectedRow = nil
         currentSelectedItem = nil
     }
 
     fileprivate func currentSelectedIndexPath() -> XYXFilterIndexPath? {
-        
-        let type = dataSource?.menu(menu!, typeOfColumn: currentSelectedColumn)
         var theSelectedIndexpath:XYXFilterIndexPath? = nil
-        
-        switch type! {
-        case ColumnType.CollectionView.rawValue:
-            for idxPath in menu!.selectedCollectionViewIndexPaths{
-                if idxPath.column == currentSelectedColumn && idxPath.row == currentSelectedRow{
-                    theSelectedIndexpath = idxPath
-                }
-            }
-            
-        case ColumnType.TableViewOne.rawValue:
-            for idxPath in menu!.selectedTableViewIndexPaths{
-                if idxPath.column == currentSelectedColumn {
-                    theSelectedIndexpath = idxPath
-                }
-            }
-            theSelectedIndexpath = theSelectedIndexpath ?? XYXFilterIndexPath.indexOf(currentSelectedColumn, 0, 0)
-            
-        case ColumnType.TableViewTwo.rawValue:
-            for idxPath in menu!.selectedTableViewIndexPaths{
-
-                if idxPath.column == currentSelectedColumn{
-                    if currentSelectedRow == nil || currentSelectedRow == idxPath.row {
+        let type = dataSource?.menu(menu!, typeOfColumn: currentSelectedColumn)
+   
+        if let tn = type, let tt = ColumnType.init(rawValue: tn) {
+            switch tt {
+            case XYXFilterView.ColumnType.CollectionView:
+                for idxPath in menu!.selectedCollectionViewIndexPaths{
+                    if idxPath.column == currentSelectedColumn && idxPath.row == currentSelectedRow{
                         theSelectedIndexpath = idxPath
                     }
                 }
+            case XYXFilterView.ColumnType.TableViewOne:
+                for idxPath in menu!.selectedTableViewIndexPaths{
+                    if idxPath.column == currentSelectedColumn {
+                        theSelectedIndexpath = idxPath
+                    }
+                }
+                theSelectedIndexpath = theSelectedIndexpath ?? XYXFilterIndexPath.indexOf(currentSelectedColumn, 0, 0)
+                
+            case XYXFilterView.ColumnType.TableViewTwo:
+                for idxPath in menu!.selectedTableViewIndexPaths{
+                    
+                    if idxPath.column == currentSelectedColumn{
+                        if currentSelectedRow == nil || currentSelectedRow == idxPath.row {
+                            print("---------C")
+                            theSelectedIndexpath = idxPath
+                        }
+                    }
+                }
+                theSelectedIndexpath = theSelectedIndexpath ?? XYXFilterIndexPath.indexOf(currentSelectedColumn, currentSelectedRow ?? 0, 0)
+                
             }
-            theSelectedIndexpath = theSelectedIndexpath ?? XYXFilterIndexPath.indexOf(currentSelectedColumn, currentSelectedRow ?? 0, 0)
-            
-        default:
-            return theSelectedIndexpath
+        }else if currentSelectedColumn >= 0 && currentSelectedColumn <= (menu?.titleLayers.count)! {
+            print("currentSelectedColumn:\(currentSelectedColumn),意外的。type : \(type!)")
+            return currentSelectedIndexPath()
         }
+        print("---------D.type : \(type!),\(currentSelectedColumn >= 0),\(currentSelectedColumn <= (menu?.titleLayers.count)!)")
         return theSelectedIndexpath
+        
     }
 
     func clearSelectedData() {
@@ -272,7 +279,6 @@ extension XYXFilterView:UITableViewDataSource{
                 theRow = highlightedIndexPath.row!
             }
             let idxPath = XYXFilterIndexPath.indexOf(currentSelectedColumn, theRow, indexPath.row)
-            
             
             if let newTitle = dataSource?.menu?(menu!, titleOfItemAt: idxPath){
                 title = newTitle
@@ -358,7 +364,7 @@ extension XYXFilterView:UITableViewDelegate{
             menu?.closeFilter(with: cell.textLabel?.text, at: theSelectedIndex)
             
             resetCurrentSelectedIndexPath()
-            
+            statisticResult()
             submitResult()
             
         }else if columnType == XYXFilterView.ColumnType.TableViewTwo.rawValue{
@@ -390,7 +396,7 @@ extension XYXFilterView:UITableViewDelegate{
                     menu?.closeFilter(nil)
                 }
                 resetCurrentSelectedIndexPath()
-                
+                statisticResult()
                 submitResult()
             }
         }
