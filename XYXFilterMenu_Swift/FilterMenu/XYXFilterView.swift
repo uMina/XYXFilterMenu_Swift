@@ -178,7 +178,6 @@ class XYXFilterView: UIView {
     }
     
     func resetCurrentSelectedIndexPath() {
-        print("resetCurrentSelectedIndexPath()被调用了")
         currentSelectedRow = nil
         currentSelectedItem = nil
     }
@@ -208,7 +207,6 @@ class XYXFilterView: UIView {
                     
                     if idxPath.column == currentSelectedColumn{
                         if currentSelectedRow == nil || currentSelectedRow == idxPath.row {
-                            print("---------C")
                             theSelectedIndexpath = idxPath
                         }
                     }
@@ -217,10 +215,8 @@ class XYXFilterView: UIView {
                 
             }
         }else if currentSelectedColumn >= 0 && currentSelectedColumn <= (menu?.titleLayers.count)! {
-            print("currentSelectedColumn:\(currentSelectedColumn),意外的。type : \(type!)")
             return currentSelectedIndexPath()
         }
-        print("---------D.type : \(type!),\(currentSelectedColumn >= 0),\(currentSelectedColumn <= (menu?.titleLayers.count)!)")
         return theSelectedIndexpath
         
     }
@@ -330,7 +326,7 @@ extension XYXFilterView:UITableViewDelegate{
             menu?.selectedTableViewIndexPaths.append(indexPath)
            
         }else if type == XYXFilterView.ColumnType.TableViewTwo {
-            
+            /*
             menu?.selectedTableViewIndexPaths = (menu?.selectedTableViewIndexPaths.filter{ path -> Bool in
                 if indexPath.column == path.column{
                     if indexPath.row != path.row && indexPath.item == 0{
@@ -343,7 +339,14 @@ extension XYXFilterView:UITableViewDelegate{
                 }
                 return true
                 })!
-            
+            */
+            menu?.selectedTableViewIndexPaths = (menu?.selectedTableViewIndexPaths.filter{ path -> Bool in
+                if indexPath.column == path.column{
+                    shouldChange = true
+                    return false
+                }
+                return true
+                })!
             if shouldChange{
                 menu?.selectedTableViewIndexPaths.append(indexPath)
             }

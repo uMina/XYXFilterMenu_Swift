@@ -10,7 +10,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "XYXFilterMenu_Swift/FilterMenu/XYXFilterView.swift"
-            timestampString = "547365904.036078"
+            timestampString = "547367011.5571769"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "208"
@@ -26,12 +26,28 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "XYXFilterMenu_Swift/FilterMenu/XYXFilterView.swift"
-            timestampString = "547365904.037439"
+            timestampString = "547367011.557693"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "181"
-            endingLineNumber = "181"
-            landmarkName = "resetCurrentSelectedIndexPath()"
+            startingLineNumber = "383"
+            endingLineNumber = "383"
+            landmarkName = "tableView(_:didSelectRowAt:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "XYXFilterMenu_Swift/FilterMenu/XYXFilterView.swift"
+            timestampString = "547367011.558"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "322"
+            endingLineNumber = "322"
+            landmarkName = "tableViewType(_:append:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
