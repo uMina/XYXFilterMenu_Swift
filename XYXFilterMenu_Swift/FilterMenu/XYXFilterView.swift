@@ -111,7 +111,7 @@ class XYXFilterView: UIView {
         secondTableView.backgroundColor = MENU_BG_COLOR_DEFAULT
         collectionView.backgroundColor = MENU_BG_COLOR_DEFAULT
         
-        self.clipsToBounds = true
+        z
     }
     
     private override init(frame: CGRect) {
@@ -452,7 +452,6 @@ extension XYXFilterView:UICollectionViewDataSource{
             cell.isSelected = isSelected
             collectionView.selectItem(at: indexPath, animated: false, scrollPosition: UICollectionViewScrollPosition.left)
         }
-
         return cell
     }
 

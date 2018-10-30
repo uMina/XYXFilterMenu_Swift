@@ -11,11 +11,15 @@ import UIKit
 class ViewController: UIViewController {
 
     let titles = ["第1列","第2列","第3列","第4列"]
+    
+    //
     let source0 = ["第一行","第二行"]
     let source0_0 = ["不限","弟子规","圣人训","首孝悌","次谨信","泛爱众","而亲仁","有余力","则学文"]
     let source0_1 = ["不限","父母呼","应勿缓","父母命","行勿懒","父母教","须敬听","父母责","须顺承","冬则温","夏则凊"]
     let source1 = ["不限","晨则省","昏则定","出必告","反必面","居有常"]
     let source2 = ["不限","业无变","事虽小","勿擅为"]
+    
+    //CollectionView
     let source3 = ["第一行","第二行","第三行"]
     let source3_0 = ["苟擅为","子道亏"]
     let source3_1 = ["物虽小","勿私藏","苟私藏","亲心伤"]
