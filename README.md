@@ -11,7 +11,7 @@
  DEMO效果如下：
 ![gif](./Images/demo.gif)
 
-###调用方法也很简单：
+### 调用方法也很简单：
 ```Swift 4.0
 let menu = XYXFilterMenu.init(frame: CGRect(x: 0, y: 100, width: XYX_SCREEN_WIDTH, height: 44))
 menu.dataSource = self
